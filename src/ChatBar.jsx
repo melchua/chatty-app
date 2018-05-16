@@ -13,11 +13,6 @@ class ChatBar extends Component {
     // console.log(evt.key);
     if (evt.key === "Enter") {
       evt.preventDefault();
-// websockets
-      let MessageUserString = `${this.props.currentUser.name} said ${evt.target.value}`;
-      this.props.sendMessageItem(MessageUserString);
-
-// outside of sockets
       this.props.addMessageItem(evt.target.value);
       evt.target.value ="";
     }

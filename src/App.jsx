@@ -3,7 +3,6 @@ import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
 
 
-
 // helper functions
 
 export const rando = (alphabet => {
@@ -25,52 +24,41 @@ export const rando = (alphabet => {
 class App extends Component {
   constructor() {
     super();
-    this.state = {currentUser: { name: "Buddy" },
-                  messages: [ {id: 1, username: "Bob", content: "Bob bobs for blueberries"}, {id: 2, username: "Jill Kill", content: "Lalallaal"} ]
-                };
+    this.state = {
+      currentUser: { name: "Buddy" },
+      messages: [ ] // messages coming from server will be stored here as they arrive
+    };
     this.addMessageItem = this.addMessageItem.bind(this);
     this.sendMessageItem = this.sendMessageItem.bind(this);
   }
 
   componentDidMount() {
     this.socket = new WebSocket('ws://localhost:3001');
-    this.socket.onopen = () => {
-      this.socket.send("Connected to server");
 
-    // this.socket.addEventListener('message', (evt) => {
-
-    // });
+    this.socket.onmessage = (event) => {
+    // save data
+      const newMessage = JSON.parse(event.data);
+      console.log(newMessage);
+      const prevMessageList = this.state.messages;
+      const newMessageList = [...prevMessageList, newMessage];
+      this.setState( {messages: newMessageList});
     };
   }
 
-
-
-    // in Testing code to simulate messages - REMOVE
-  // componentDidMount() {
-  //   console.log("componentDidMount <App />");
-  //   setTimeout(() => {
-  //     console.log("Simulating incoming message");
-  //     // Add a new message to the list of messages in the data store
-  //     const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-  //     const messages = this.state.messages.concat(newMessage)
-  //     // Update the state of the app component.
-  //     // Calling setState will trigger a call to render() in App and all child components.
-  //     this.setState({messages: messages})
-  //   }, 3000);
-  // }
-
   // update messages to add new message
 
-  addMessageItem(chatBarInput) {
-    const prevMessageList = this.state.messages;
-    const newMessage = { id: rando(), username: this.state.currentUser.name, content: chatBarInput};
-    const newMessageList = [...prevMessageList, newMessage];
-    this.setState( {messages: newMessageList});
+  addMessageItem(content) {
+    const username = this.state.currentUser.name;
+    const newMessage = { username , content: content};
+    this.sendMessageItem(newMessage);
+
+
   }
 
-// sends messages from ChatBar to server
+// send message to server
   sendMessageItem(messageText) {
-    this.socket.send(messageText);
+    console.log(JSON.stringify(messageText));
+    this.socket.send(JSON.stringify(messageText));
   }
 
   render() {
