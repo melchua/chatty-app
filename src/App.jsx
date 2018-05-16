@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
+
 
 
 // helper functions
@@ -19,8 +19,6 @@ export const rando = (alphabet => {
   return () => randoIter("", 10);
 })("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
-
-
 //
 
 
@@ -31,21 +29,35 @@ class App extends Component {
                   messages: [ {id: 1, username: "Bob", content: "Bob bobs for blueberries"}, {id: 2, username: "Jill Kill", content: "Lalallaal"} ]
                 };
     this.addMessageItem = this.addMessageItem.bind(this);
+    this.sendMessageItem = this.sendMessageItem.bind(this);
   }
 
-    // in App.jsx
   componentDidMount() {
-    console.log("componentDidMount <App />");
-    setTimeout(() => {
-      console.log("Simulating incoming message");
-      // Add a new message to the list of messages in the data store
-      const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
-      const messages = this.state.messages.concat(newMessage)
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({messages: messages})
-    }, 3000);
+    this.socket = new WebSocket('ws://localhost:3001');
+    this.socket.onopen = () => {
+      this.socket.send("Connected to server");
+
+    // this.socket.addEventListener('message', (evt) => {
+
+    // });
+    };
   }
+
+
+
+    // in Testing code to simulate messages - REMOVE
+  // componentDidMount() {
+  //   console.log("componentDidMount <App />");
+  //   setTimeout(() => {
+  //     console.log("Simulating incoming message");
+  //     // Add a new message to the list of messages in the data store
+  //     const newMessage = {id: 3, username: "Michelle", content: "Hello there!"};
+  //     const messages = this.state.messages.concat(newMessage)
+  //     // Update the state of the app component.
+  //     // Calling setState will trigger a call to render() in App and all child components.
+  //     this.setState({messages: messages})
+  //   }, 3000);
+  // }
 
   // update messages to add new message
 
@@ -53,7 +65,12 @@ class App extends Component {
     const prevMessageList = this.state.messages;
     const newMessage = { id: rando(), username: this.state.currentUser.name, content: chatBarInput};
     const newMessageList = [...prevMessageList, newMessage];
-    this.setState( {messages: newMessageList})
+    this.setState( {messages: newMessageList});
+  }
+
+// sends messages from ChatBar to server
+  sendMessageItem(messageText) {
+    this.socket.send(messageText);
   }
 
   render() {
@@ -63,7 +80,7 @@ class App extends Component {
           <a href="/" className="navbar-brand">Chatty</a>
         </nav>
         <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser} addMessageItem={this.addMessageItem} />
+        <ChatBar currentUser={this.state.currentUser} addMessageItem={this.addMessageItem} sendMessageItem={this.sendMessageItem} />
 
       </div>
     );
