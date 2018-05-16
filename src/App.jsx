@@ -3,12 +3,34 @@ import React, {Component} from 'react';
 import ChatBar from './ChatBar.jsx';
 import MessageList from './MessageList.jsx';
 
+
+// helper functions
+
+export const rando = (alphabet => {
+  const alphabetLength = alphabet.length;
+  const randoIter = (key, n) => {
+    if (n === 0) {
+      return key;
+    }
+    const randoIndex = Math.floor(Math.random() * alphabetLength);
+    const randoLetter = alphabet[randoIndex];
+    return randoIter(key + randoLetter, n - 1);
+  };
+  return () => randoIter("", 10);
+})("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
+
+
+//
+
+
 class App extends Component {
   constructor() {
     super();
     this.state = {currentUser: { name: "Buddy" },
                   messages: [ {id: 1, username: "Bob", content: "Bob bobs for blueberries"}, {id: 2, username: "Jill Kill", content: "Lalallaal"} ]
                 };
+    this.addMessageItem = this.addMessageItem.bind(this);
   }
 
     // in App.jsx
@@ -25,6 +47,15 @@ class App extends Component {
     }, 3000);
   }
 
+  // update messages to add new message
+
+  addMessageItem(chatBarInput) {
+    const prevMessageList = this.state.messages;
+    const newMessage = { id: rando(), username: this.state.currentUser.name, content: chatBarInput};
+    const newMessageList = [...prevMessageList, newMessage];
+    this.setState( {messages: newMessageList})
+  }
+
   render() {
     return (
       <div>
@@ -32,7 +63,7 @@ class App extends Component {
           <a href="/" className="navbar-brand">Chatty</a>
         </nav>
         <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser}/>
+        <ChatBar currentUser={this.state.currentUser} addMessageItem={this.addMessageItem} />
 
       </div>
     );
