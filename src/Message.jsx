@@ -1,19 +1,27 @@
 import React, {Component} from 'react';
 
-
 class Message extends Component {
   render() {
-    const {username, content} = this.props.message;
+    const {username, content, type} = this.props.message;
     return (
       <div>
+//  break out into components
+// read conditional rendering react to learn best practice
+      {
+        type === "incomingMessage"
+        ?
+          <div className="message">
+            <span className="message-username">{username}</span>
+            <span className="message-content">{content}</span>
+          </div>
+        :
+          <div className="message system">
+            {content}
+          </div>
+      }
 
-        <div className="message">
-          <span className="message-username">{username}</span>
-          <span className="message-content">{content}</span>
-        </div>
-{/*        <div className="message system">
-          Anonymous1 changed their name to nomnom.
-        </div>*/}
+      { type === 'incomingMessage' && <message />}
+
       </div>
     );
   }
