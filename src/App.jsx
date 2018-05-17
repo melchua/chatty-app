@@ -20,16 +20,16 @@ export const rando = (alphabet => {
 
 //
 
-
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      currentUser: { name: "Buddy" },
-      messages: [ ] // messages coming from server will be stored here as they arrive
+      currentUser: { name: "Anonymous" },
+      messages: [ ], // messages coming from server will be stored here as they arrive
     };
     this.addMessageItem = this.addMessageItem.bind(this);
     this.sendMessageItem = this.sendMessageItem.bind(this);
+    this.updateCurrentUser = this.updateCurrentUser.bind(this);
   }
 
   componentDidMount() {
@@ -38,10 +38,24 @@ class App extends Component {
     this.socket.onmessage = (event) => {
     // save data
       const newMessage = JSON.parse(event.data);
-      console.log(newMessage);
-      const prevMessageList = this.state.messages;
-      const newMessageList = [...prevMessageList, newMessage];
-      this.setState( {messages: newMessageList});
+
+      switch(newMessage.type) {
+        case "incomingMessage":
+        case "incomingNotification":
+        // handle incoming message
+          console.log(newMessage);
+          const prevMessageList = this.state.messages;
+          const newMessageList = [...prevMessageList, newMessage];
+          this.setState( {messages: newMessageList});
+        break;
+        // handle incoming notification
+        // break;
+        default:
+        // show an error in the console if the message type is unknown
+        throw new Error("Unknown event type " + newMessage.type);
+      }
+
+
     };
   }
 
@@ -49,10 +63,25 @@ class App extends Component {
 
   addMessageItem(content) {
     const username = this.state.currentUser.name;
-    const newMessage = { username , content: content};
+    const newMessage = { username , content: content, type: "postMessage"};
     this.sendMessageItem(newMessage);
+  }
+
+  updateCurrentUser(username) {
+    console.log("updating ", username);
 
 
+    // send notification
+    const prevUsername = this.state.currentUser.name;
+
+    this.setState({currentUser: {name: username}});
+    const content = `${prevUsername} changed their name to ${username}`;
+    const notification = {
+        type: "postNotification",
+        content
+    };
+    console.log("update that name", notification);
+    this.sendMessageItem(notification);
   }
 
 // send message to server
@@ -68,7 +97,7 @@ class App extends Component {
           <a href="/" className="navbar-brand">Chatty</a>
         </nav>
         <MessageList messages={this.state.messages}/>
-        <ChatBar currentUser={this.state.currentUser} addMessageItem={this.addMessageItem} sendMessageItem={this.sendMessageItem} />
+        <ChatBar currentUser={this.state.currentUser} addMessageItem={this.addMessageItem} sendMessageItem={this.sendMessageItem} updateCurrentUser={this.updateCurrentUser} />
 
       </div>
     );
