@@ -26,6 +26,7 @@ class App extends Component {
     this.state = {
       currentUser: { name: "Anonymous" },
       messages: [ ], // messages coming from server will be stored here as they arrive
+      usercount: 0,
     };
     this.addMessageItem = this.addMessageItem.bind(this);
     this.sendMessageItem = this.sendMessageItem.bind(this);
@@ -41,6 +42,7 @@ class App extends Component {
 
       switch(newMessage.type) {
         case "incomingMessage":
+        // handle incoming notification
         case "incomingNotification":
         // handle incoming message
           console.log(newMessage);
@@ -48,8 +50,11 @@ class App extends Component {
           const newMessageList = [...prevMessageList, newMessage];
           this.setState( {messages: newMessageList});
         break;
-        // handle incoming notification
-        // break;
+        case "incomingUserCount":
+        // handle user count
+          console.log(newMessage);
+          this.setState( {usercount: newMessage.count});
+        break;
         default:
         // show an error in the console if the message type is unknown
         throw new Error("Unknown event type " + newMessage.type);
@@ -95,6 +100,7 @@ class App extends Component {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
+          <span className="navbar-usercount">{this.state.usercount} users online</span>
         </nav>
         <MessageList messages={this.state.messages}/>
         <ChatBar currentUser={this.state.currentUser} addMessageItem={this.addMessageItem} sendMessageItem={this.sendMessageItem} updateCurrentUser={this.updateCurrentUser} />

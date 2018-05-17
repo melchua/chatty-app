@@ -5,8 +5,7 @@ class Message extends Component {
     const {username, content, type} = this.props.message;
     return (
       <div>
-//  break out into components
-// read conditional rendering react to learn best practice
+{/* read conditional rendering react to learn best practice */}
       {
         type === "incomingMessage"
         ?
@@ -20,7 +19,7 @@ class Message extends Component {
           </div>
       }
 
-      { type === 'incomingMessage' && <message />}
+{/* { type === 'incomingMessage' && <message />}   */}
 
       </div>
     );
