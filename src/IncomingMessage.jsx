@@ -10,7 +10,7 @@ class IncomingMessage extends Component {
       <div className="message">
         <span className="message-username">{username}</span>
         <span className="message-content">{content}</span>
-        <Image imgsrc={content} detectImage={this.detectImage} />
+        <Image imgsrc={content}/>
       </div>
     );
   }
