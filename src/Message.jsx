@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
 import Image from './Image.jsx';
+// import getRandomDadJoke from './dadjoke.js';
 
 class Message extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class Message extends Component {
             <span className="message-username">{username}</span>
             <span className="message-content">{content}</span>
             <Image imgsrc={content} detectImage={this.detectImage} />
+
           </div>
         :
           <div className="message system">

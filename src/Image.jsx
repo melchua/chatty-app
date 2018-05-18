@@ -15,9 +15,9 @@ class Image extends Component {
     return (
 
      this.detectImage(this.props.imgsrc) ?
-      <div>
-        <img className="Message-image" src={this.detectImage(this.props.imgsrc)[0]}/>
-      </div>
+      <span className="message-content">
+        <img className="message-image" src={this.detectImage(this.props.imgsrc)[0]}/>
+      </span>
       :
       <div></div>
 
