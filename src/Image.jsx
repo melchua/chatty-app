@@ -13,15 +13,12 @@ class Image extends Component {
 
   render() {
     return (
-
      this.detectImage(this.props.imgsrc) ?
-      <span className="message-content">
+      <div className="message-content">
         <img className="message-image" src={this.detectImage(this.props.imgsrc)[0]}/>
-      </span>
+      </div>
       :
       <div></div>
-
-
     );
   }
 }

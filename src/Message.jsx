@@ -17,7 +17,8 @@ class Message extends Component {
         ?
           <div className="message">
             <span className="message-username">{username}</span>
-            <span className="message-container">{content}
+            <span className="message-container">
+            <div className="message-content">{content}</div>
               <Image imgsrc={content}/>
             </span>
           </div>
