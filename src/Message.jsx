@@ -17,9 +17,9 @@ class Message extends Component {
         ?
           <div className="message">
             <span className="message-username">{username}</span>
-            <span className="message-content">{content}</span>
-            <Image imgsrc={content} detectImage={this.detectImage} />
-
+            <span className="message-container">{content}
+              <Image imgsrc={content}/>
+            </span>
           </div>
         :
           <div className="message system">

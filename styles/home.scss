@@ -49,15 +49,21 @@ body {
   padding: 5px 20px;
 }
 
-.message-content,
+.message-container,
 .message-username {
   overflow: hidden;
   margin: 5px;
   padding: 0 10px;
 }
 
-.message-content {
+
+.message-container {
   flex: 8;
+  flex-direction: column;
+}
+
+.message-content {
+  flex: 5;
 }
 
 .message-username {
