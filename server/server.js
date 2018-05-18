@@ -123,9 +123,9 @@ wss.on('connection', (socket) => {
 
   socket.on('message', function incoming(data) {
     const newMessage = makeMessage(JSON.parse(data));
-    console.dir(newMessage, { color: true });
     const gifRegex = /\/gif:\s\S*/;
     const gifRemoveCommandStr = /\/gif:\s/;
+    // console.dir(newMessage, { color: true });
     if(newMessage.content === "/dadjoke") {
       console.log('Requesting joke');
       getRandomDadJoke((err, joke) => {
@@ -144,12 +144,10 @@ wss.on('connection', (socket) => {
           console.log(JSON.stringify(newMessage));
           wss.broadcast(JSON.stringify(newMessage));
         });
-
     } else {
       wss.broadcast(JSON.stringify(newMessage));
     }
   });
 
-  // now we have to return the data
 });
 

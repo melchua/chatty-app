@@ -7,8 +7,19 @@ class Message extends Component {
   constructor(props) {
     super(props);
   }
+
+  // returnImageURL(content) {
+  //   const regexp = /\S*\.(jpg|png|gif)/ ;
+  //   const imgsrc = content.match(regexp);
+  //   return imgsrc;
+  // }
+
   render() {
-    const {username, content, type} = this.props.message;
+    let {username, content, type} = this.props.message;
+    const regexp = /\S*\.(jpg|png|gif)/ ;
+
+    const msgContent = content.replace(regexp, "");
+
     return (
       <div>
 {/* read conditional rendering react to learn best practice */}
@@ -18,8 +29,9 @@ class Message extends Component {
           <div className="message">
             <span className="message-username">{username}</span>
             <span className="message-container">
-            <div className="message-content">{content}</div>
-              <Image imgsrc={content}/>
+
+            <div className="message-content">{msgContent}</div>
+            <Image imgsrc={content}/>
             </span>
           </div>
         :

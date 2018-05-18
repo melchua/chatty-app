@@ -42,7 +42,6 @@ class App extends Component {
 
       switch(newMessage.type) {
         case "incomingMessage":
-        // handle incoming notification
         case "incomingNotification":
         // handle incoming message
           console.log(newMessage);
