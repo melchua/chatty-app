@@ -1,8 +1,9 @@
 
 
-const testString = "d http://www.bacon.com/bacon.png test";
+const testString = "/gif: blablabha";
 
-var regexp = /\S*\.(jpg|png|gif)/ ;
+var regexp = /\/gif:\s\S*/;
+// var regexp = /\S*\.(jpg|png|gif)/ ;
 console.log(testString.match(regexp));
 
 // console.log(testString);

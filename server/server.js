@@ -2,8 +2,24 @@
 const SocketServer = require('ws');
 
 const express = require('express');
-// const SocketServer = require('ws').Server;
 
+const request = require('request');
+
+// Jokes API
+var JOKE_URL = 'https://icanhazdadjoke.com/';
+const jokeOptions = {
+                json: true,
+                url: JOKE_URL,
+                method: "GET"
+              };
+
+// Giphy API
+var GIPHY_URL = 'http://api.giphy.com/v1/gifs/search?api_key=0UZMQps0reAG0iklFwBxxKI4m97mPdRL&limit=1';
+const giphyOptions = {
+                    json: true,
+                    url: GIPHY_URL,
+                    method: "GET"
+                  };
 // Set the port to 3001
 const PORT = 3001;
 
@@ -62,6 +78,33 @@ wss.broadcast = function broadcast(data) {
 };
 
 
+function getRandomDadJoke(cb) {
+// get random dad joke
+  request(jokeOptions, (err, res, body) => {
+    if(err) {
+      console.error(err);
+      return cb(err);
+    }
+    console.log(body.joke);
+    cb(null, body.joke);
+  });
+}
+
+function getGiphyURL(cb) {
+  request(giphyOptions, (err, res, body) => {
+    if(err) {
+      console.error(err);
+      return cb(err);
+    }
+    const imageObj = body.data[0].images.original;
+    cb(null, imageObj);
+  });
+}
+
+// getGiphyURL((err, gif) => {
+//   console.log('gif: ', gif);
+// });
+
 wss.on('connection', (socket) => {
   onlineUserCount = wss.clients.size;
   const usercount = makeUserCountObj(onlineUserCount);
@@ -80,7 +123,31 @@ wss.on('connection', (socket) => {
 
   socket.on('message', function incoming(data) {
     const newMessage = makeMessage(JSON.parse(data));
-    wss.broadcast(JSON.stringify(newMessage));
+    console.dir(newMessage, { color: true });
+    const gifRegex = /\/gif:\s\S*/;
+    const gifRemoveCommandStr = /\/gif:\s/;
+    if(newMessage.content === "/dadjoke") {
+      console.log('Requesting joke');
+      getRandomDadJoke((err, joke) => {
+        newMessage.content = joke;
+        wss.broadcast(JSON.stringify(newMessage));
+      });
+    } else if(newMessage.content.match(gifRegex)) {
+        console.log('Requesting Giphy');
+        console.log(newMessage.content.substring(6));
+        const searchTerm = newMessage.content.substring(6);
+        giphyOptions.url += `&q=${searchTerm}`;
+        console.log(giphyOptions.url);
+        getGiphyURL((err, gif) => {
+          console.log('gif: ', gif);
+          newMessage.content = gif.url;
+          console.log(JSON.stringify(newMessage));
+          wss.broadcast(JSON.stringify(newMessage));
+        });
+
+    } else {
+      wss.broadcast(JSON.stringify(newMessage));
+    }
   });
 
   // now we have to return the data
