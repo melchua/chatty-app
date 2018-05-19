@@ -5,7 +5,7 @@ Chatty App will allow users to communicate with each other without having to reg
 
 ### Screenshot
 
-
+!["Animated gif of screenshot"](​https://github.com/melchua/chatty-app/blob/master/docs/screencast-features.gif)
 
 ### Usage
 
